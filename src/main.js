@@ -32,6 +32,7 @@ ws.subscribe("OnJsonApiEvent_lol-matchmaking_v1_search", async ({ data }) => {
       case "found":
         if (!isAccepted) {
           isAccepted = true;
+          console.clear();
           console.log('\x1b[32m%s\x1b[0m', "match found! accepting match...");
           await acceptMatch(https);
         }
