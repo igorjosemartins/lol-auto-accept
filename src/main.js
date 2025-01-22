@@ -1,24 +1,32 @@
-import { Hexgate as HttpsClient, auth, poll } from "hexgate";
-import { acceptMatch, checkIfFoundMatch } from "./requests.js";
+import { Hexgate as HttpsClient, LcuClient as WsClient, auth, poll } from "hexgate";
+import { acceptMatch } from "./requests.js";
+import { formatTimer } from "./utils.js";
 
 const credentials = await poll(auth);
 
 const https = new HttpsClient(credentials);
+const ws = new WsClient(credentials);
 
-const lolAutoAccept = async () => {
+let isAccepted = false;
+
+ws.subscribe("OnJsonApiEvent_lol-matchmaking_v1_search", async ({ data }) => {
   try {
-    const { data: { state, timer } } = await checkIfFoundMatch(https);
-    
-    if (state === "InProgress" && timer > 0) await acceptMatch(https);
-    else console.log("\nfinding match...");
-  
-  } catch (e) {
-    console.error("\nuser not in queue");
-  }
+    const { searchState, timeInQueue } = data;
 
-  await new Promise(resolve => setTimeout(resolve, 2000));
-  
-  return lolAutoAccept();
-};
+    switch (searchState.toLowerCase()) {
+      case "searching":
+        console.clear();
+        console.log(`[${formatTimer(timeInQueue)}] finding match...`);
+        break;
 
-lolAutoAccept();
+      case "found":
+        if (!isAccepted) {
+          isAccepted = true;
+          console.log('\x1b[32m%s\x1b[0m', "match found! accepting match...");
+          await acceptMatch(https);
+        }
+
+        break;
+    }
+  } catch (error) {}
+});
