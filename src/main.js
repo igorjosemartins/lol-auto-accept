@@ -26,7 +26,7 @@ ws.subscribe("OnJsonApiEvent_lol-matchmaking_v1_search", async ({ data }) => {
     switch (searchState.toLowerCase()) {
       case "searching":
         console.clear();
-        console.log(`[${formatTimer(timeInQueue)}] finding match...`);
+        console.log('\x1b[94m%s\x1b[0m', `[${formatTimer(timeInQueue)}] finding match...`);
         break;
 
       case "found":
