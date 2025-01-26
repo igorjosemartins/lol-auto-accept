@@ -1,6 +1,6 @@
 import { Hexgate as HttpsClient, LcuClient as WsClient, auth, poll } from "hexgate";
 import { acceptMatch } from "./requests.js";
-import { formatTimer, waitingUserToQueueLog } from "./utils.js";
+import { waitingUserToQueueLog, searchingLog, matchFoundLog } from "./utils.js";
 
 waitingUserToQueueLog();
 
@@ -28,15 +28,13 @@ ws.subscribe("OnJsonApiEvent_lol-matchmaking_v1_search", async ({ data }) => {
 
     switch (searchState.toLowerCase()) {
       case "searching":
-        console.clear();
-        console.log('\x1b[94m%s\x1b[0m', `[${formatTimer(timeInQueue)}] finding match...`);
+        searchingLog(timeInQueue);
         break;
 
       case "found":
         if (!isAccepted) {
           isAccepted = true;
-          console.clear();
-          console.log('\x1b[32m%s\x1b[0m', "match found! accepting match...");
+          matchFoundLog();
           await acceptMatch(https);
         }
 

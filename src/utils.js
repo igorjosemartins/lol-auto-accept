@@ -10,3 +10,13 @@ export const waitingUserToQueueLog = () => {
   console.clear();
   console.warn("waiting for user enter the queue...");
 }
+
+export const searchingLog = (time) => {
+  console.clear();
+  console.log('\x1b[94m%s\x1b[0m', `[${formatTimer(time)}] finding match...`);
+}
+
+export const matchFoundLog = () => {
+  console.clear();
+  console.log('\x1b[32m%s\x1b[0m', "match found! accepting match...");
+}
