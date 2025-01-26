@@ -14,7 +14,10 @@ let isAccepted = false;
 ws.subscribe("OnJsonApiEvent_lol-lobby_v2_lobby", ({ data }) => {
   try {
     const { searchState } = data;
-    if (searchState === "Invalid") waitingUserToQueueLog();
+    if (searchState === "Invalid") {
+      isAccepted = false;
+      waitingUserToQueueLog();
+    }
 
   } catch (error) {}
 });
